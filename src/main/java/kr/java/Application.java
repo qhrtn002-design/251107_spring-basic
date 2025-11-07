@@ -1,7 +1,11 @@
 package kr.java;
 
+import kr.java.biz.BizService;
+import kr.java.scope.ProtypeBean;
+import kr.java.scope.SingletonBean;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 public class Application {
@@ -15,14 +19,28 @@ public class Application {
         try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class)) {
             // 알아서 Config를 읽어서 bean 생성 -> '등록'
             // 등록된 Bean -> Context (container)
+            System.out.println("[실제 로직]");
             MessageService service = ctx.getBean(MessageService.class); // 특정 클래스로 등록된 객체를 '꺼내서' 쓴다
             // 생성 및 생성 관련해서 필요한 매개변수(인자)를 알아서 다 스프링 컨테이너가 관리
+            BizService service2 = ctx.getBean(BizService.class);
+            service2.biz();
             service.show();
+            System.out.println("[Scope]");
+            SingletonBean singletonBean1 = ctx.getBean(SingletonBean.class);
+            ProtypeBean protypeBean1 = ctx.getBean(ProtypeBean.class);
+            System.out.println(System.identityHashCode(singletonBean1));
+            System.out.println(System.identityHashCode(protypeBean1));
+            SingletonBean singletonBean2 = ctx.getBean(SingletonBean.class);
+            ProtypeBean protypeBean2 = ctx.getBean(ProtypeBean.class); // Protype은 각각 생성자가 호출
+            System.out.println(System.identityHashCode(singletonBean2)); // 주소값도 Singleton은 같고
+            System.out.println(System.identityHashCode(protypeBean2)); // Prototype은 다름
         }
     }
 }
 
 @Configuration
+//@ComponentScan(basePackages = "kr.java")
+@ComponentScan(basePackages = {"kr.java.biz", "kr.java.scope"})
 class AppConfig { // Spring <- 농부. 콩 심는 농부
     // Bean.
     @Bean
