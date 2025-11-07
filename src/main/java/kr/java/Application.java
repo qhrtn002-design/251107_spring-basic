@@ -35,12 +35,13 @@ public class Application {
             System.out.println(System.identityHashCode(singletonBean2)); // 주소값도 Singleton은 같고
             System.out.println(System.identityHashCode(protypeBean2)); // Prototype은 다름
         }
+        System.out.println("[컨테이너 종료됨]");
     }
 }
 
 @Configuration
-//@ComponentScan(basePackages = "kr.java")
-@ComponentScan(basePackages = {"kr.java.biz", "kr.java.scope"})
+@ComponentScan(basePackages = "kr.java.*")
+//@ComponentScan(basePackages = {"kr.java.biz", "kr.java.scope"})
 class AppConfig { // Spring <- 농부. 콩 심는 농부
     // Bean.
     @Bean
